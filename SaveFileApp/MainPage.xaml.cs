@@ -1,4 +1,7 @@
 ﻿using System.Windows.Input;
+using System.Text;
+using CommunityToolkit.Maui;
+
 
 namespace SaveFileApp
 {
@@ -8,11 +11,18 @@ namespace SaveFileApp
         public MainPage()
         {
             InitializeComponent();
+            openSaveFile = new Command<Task>(SaveFile);
         }
 
-        public async Task SaveFile(CancellationToken cancellationToken)
+        public async Task SaveFile()
         {
-            var fileSaveDialog = new 
+            var stream = new MemoryStream(UTF8Encoding.UTF8.GetBytes("To jest nasz plik!"));
+            using var filePicker = await FileSaver.Default.SaveAsync("text.txt", stream);
+            if (filePicker.IsSuccessful)
+                await DisplayAlertAsync("Tytuł", "Udało się", "OK");
+            else
+                await DisplayAlertAsync("Tytuł", "Nie udało się", "OK");
+
         }
     }
 }
